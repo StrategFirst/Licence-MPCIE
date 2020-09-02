@@ -1,0 +1,254 @@
+//REQUIRE
+const Discord = require('discord.js');			// Module/API Discord (npm install discord.js)
+const fs = require('fs');				// Module/API FilSystem (natif à nodejs)
+const Dice = require('Dice.js');			// Module/API Dice (créé)*/
+const Safety = require('Safety.js');			// Variable au contenu sensible
+
+//DISCORD BOT
+const bot = new Discord.Client();			// Instanciation du bot
+let connected = false;					// Pour savoir si le bot est co
+
+//CONSTANT
+const PREFIX = '?';					// Le préfixe requis à toute commande
+const IDChannelInformation = '689114326468263949';	// L'id du channel d'information pour mp les gens là-ba
+
+const IDInscriptionChannel = '714583020119523410';
+const IDInscriptionL3 = '714585852679946322';
+const IDInscriptionL1 = '717913819351089269';
+
+const events = {
+	MESSAGE_REACTION_ADD: 'messageReactionAdd',
+	MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
+};
+
+//MESSAGE FROM FILE
+let MessageAide;					// Message afficher lors de la demande d'aide en message privé
+let MessageBienvenue;					// Message afficher lors de l'arrivée sur le serveur
+let MessageAideReply;					// Message afficher lors de la demande d'aide en réponse
+
+//CONNEXION
+if (!connected) {					// Si déconnecté
+	LogOn(Safety.token);				// Tentative de connection
+}
+
+function LogOn (token) {				// Appel de la connection
+	bot.login(token);				// Transmition de la demande
+}
+
+//RÉCUPÉRATION DE TOUT LES MESSAGES
+fs.readFile('./Message/Aide.txt', 'utf-8', (err, data) => { if(err) { console.error("Erreur: "+err); throw err;} MessageAide = data; });
+fs.readFile('./Message/Bienvenue.txt', 'utf-8', (err, data) => { if(err) { console.error("Erreur: "+err); throw err;} MessageBienvenue = data; });
+fs.readFile('./Message/AideReply.txt', 'utf-8', (err, data) => { if(err) { console.error("Erreur: "+err); throw err;} MessageAideReply = data; });
+fs.readFile('./Message/Invitation.txt', 'utf-8', (err, data) => { if(err) { console.error("Erreur: "+err); throw err;} MessageInvitation = data; });
+fs.readFile('./Message/Erreur.txt', 'utf-8', (err, data) => { if(err) { console.error("Erreur: "+err); throw err;} MessageErreur = data; });
+
+//PRÊT
+bot.on('ready', ready => {
+	connected = true;										// Changement mémoire
+	console.log("-=- Connect to Discord -=-");							// Affichage console
+});
+
+//DECONNEXION
+bot.on('disconnect', (erMsg, code) =>{
+	console.log("-=- Disconnect from Discord -- code: ", code, " -- erMsg: ", erMsg, " -=-");	// Affichage console
+	connected = false;										// Changement mémoire
+});
+
+//NOUVEL-ARRIVANT
+bot.on('guildMemberAdd', member => {
+	if(member.user.bot) {
+		console.log({" Type ":"BOT","Nom":member.user.username,"ID":member.user.id});
+	} else {
+		console.log({"Nom":member.user.username,"ID":member.user.id});
+		const CurrentMentionID = ("<@"+ member.user.id +">");
+		bot.channels.get(IDChannelInformation).send(MessageBienvenue.replace('>>MENTIONTAG<<',CurrentMentionID));
+		member.addRole(member.guild.roles.find(role => role.name === "Inconnu"));
+	}
+});
+
+//ÉVÉNEMENT QUELCONQUE
+bot.on('raw', async event => {
+	if (!events.hasOwnProperty(event.t)) return;
+
+	const { d: data } = event;
+	const user = bot.users.get(data.user_id);
+	const channel = bot.channels.get(data.channel_id) || await user.createDM();
+
+	if (channel.messages.has(data.message_id)) return;
+
+	const message = await channel.fetchMessage(data.message_id);
+	const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
+	let reaction = message.reactions.get(emojiKey);
+
+	if (!reaction) {
+		const emoji = new Discord.Emoji(bot.guilds.get(data.guild_id), data.emoji);
+		reaction = new Discord.MessageReaction(message, emoji, 1, data.user_id === bot.user.id);
+	}
+
+	bot.emit(events[event.t], reaction, user);
+});
+
+//RÉACTION
+bot.on('messageReactionAdd', async (reaction, user) =>{
+	
+	const messageID = reaction.message.id;
+	let mem = await reaction.message.guild.fetchMember(user);
+	const roles = reaction.message.guild.roles;
+
+	if(messageID == IDInscriptionChannel){ //message d'inscription étape 1
+		if(reaction.emoji.name==='1️⃣') {
+			mem.addRole(roles.find( x => (x.name === "Inconnu L1") )).catch(console.error);
+			mem.addRole(roles.find( x => (x.name === "L1") )).catch(console.error);
+			mem.removeRole(roles.find( x => (x.name === "Inconnu") )).catch(console.error);
+		} else if(reaction.emoji.name==='2️⃣') {
+			mem.addRole(roles.find( x => (x.name === "Inconnu L2") )).catch(console.error);
+			mem.addRole(roles.find( x => (x.name === "L2") )).catch(console.error);
+			mem.removeRole(roles.find( x => (x.name === "Inconnu") )).catch(console.error);
+		} else if(reaction.emoji.name==='3️⃣') {
+			mem.addRole(roles.find( x => (x.name === "Inconnu L3") )).catch(console.error);
+			mem.addRole(roles.find( x => (x.name === "L3") )).catch(console.error);
+			mem.removeRole(roles.find( x => (x.name === "Inconnu") )).catch(console.error);
+		} else if(reaction.emoji.name==='🇪') {
+			mem.addRole(roles.find( x => (x.name === "Enseignants") )).catch(console.error);
+			mem.removeRole(roles.find( x => (x.name === "Inconnu") )).catch(console.error);
+		} else if(reaction.emoji.name==='🅰️') {
+			mem.addRole(roles.find( x => (x.name === "Inconnu autre") )).catch(console.error);
+			mem.removeRole(roles.find( x => (x.name === "Inconnu") )).catch(console.error);
+		}
+	} else if (messageID == IDInscriptionL1 ) {
+		if(reaction.emoji.name==='✅') {
+			mem.removeRole(roles.find( x => (x.name === "Inconnu L1") )).catch(console.error);			
+		}
+	} else if (messageID == IDInscriptionL3 ) {
+		if(reaction.emoji.name==='🇲') {
+			mem.removeRole(roles.find( x => (x.name === "Inconnu L3") )).catch(console.error);
+			mem.addRole(roles.find( x => (x.name === "L3 - Mathématique") )).catch(console.error);			
+		} else if(reaction.emoji.name==='🇵') {
+			mem.removeRole(roles.find( x => (x.name === "Inconnu L3") )).catch(console.error);	
+			mem.addRole(roles.find( x => (x.name === "L3 - Physique") )).catch(console.error);			
+		} else if(reaction.emoji.name==='🇨') {
+			mem.removeRole(roles.find( x => (x.name === "Inconnu L3") )).catch(console.error);	
+			mem.addRole(roles.find( x => (x.name === "L3 - Chimie") )).catch(console.error);			
+		} else if(reaction.emoji.name==='🇮') {
+			mem.removeRole(roles.find( x => (x.name === "Inconnu L3") )).catch(console.error);
+			mem.addRole(roles.find( x => (x.name === "L3 - Informatique") )).catch(console.error);			
+		} else if(reaction.emoji.name==='🅰️') {
+			mem.addRole(roles.find( x => (x.name === "Inconnu autre") )).catch(console.error);
+		}
+	} else { //L2
+		switch( messageID ) {
+			//informatique
+			case '714583895693328479':
+			mem.removeRole(roles.find( x => (x.name === "Inconnu L2") )).catch(console.error);
+			mem.addRole(roles.find( x => (x.name === "L2 - Informatique") )).catch(console.error);
+			if(reaction.emoji.name==='1️⃣') {
+				mem.addRole(roles.find( x => (x.name === "L2 - I1") )).catch(console.error);
+			} else if(reaction.emoji.name==='2️⃣') {
+				mem.addRole(roles.find( x => (x.name === "L2 - I2") )).catch(console.error);
+			} else if(reaction.emoji.name==='3️⃣') {
+				mem.addRole(roles.find( x => (x.name === "L2 - I3") )).catch(console.error);
+			} else if(reaction.emoji.name==='4️⃣') {
+				mem.addRole(roles.find( x => (x.name === "L2 - I4") )).catch(console.error);
+			}
+			break;
+			//physique chimie
+			case '714583932020064338':
+			mem.removeRole(roles.find( x => (x.name === "Inconnu L2") )).catch(console.error);
+			mem.addRole(roles.find( x => (x.name === "L2 - Physique Chimie") )).catch(console.error);
+			if(reaction.emoji.name==='1️⃣') {
+				mem.addRole(roles.find( x => (x.name === "L2 - PC1") )).catch(console.error);
+			} else if(reaction.emoji.name==='2️⃣') {
+				mem.addRole(roles.find( x => (x.name === "L2 - PC2") )).catch(console.error);
+			}
+			break;
+			//mathématique
+			case '714583983274590228':
+			mem.removeRole(roles.find( x => (x.name === "Inconnu L2") )).catch(console.error);
+			mem.addRole(roles.find( x => (x.name === "L2 - Mathématique") )).catch(console.error);
+			if(reaction.emoji.name==='1️⃣') {
+				mem.addRole(roles.find( x => (x.name === "L2 - M1") )).catch(console.error);
+			} else if(reaction.emoji.name==='2️⃣') {
+				mem.addRole(roles.find( x => (x.name === "L2 - M2") )).catch(console.error);
+			} else if(reaction.emoji.name==='3️⃣') {
+				mem.addRole(roles.find( x => (x.name === "L2 - M3") )).catch(console.error);
+			}
+			break;
+			//mathématique appliqué
+			case '714584021740290058':
+			mem.removeRole(roles.find( x => (x.name === "Inconnu L2") )).catch(console.error);
+			mem.addRole(roles.find( x => (x.name === "L2 -  Mathématique Appliqué") )).catch(console.error);
+			if(reaction.emoji.name==='1️⃣') {
+				mem.addRole(roles.find( x => (x.name === "L2 - MA1") )).catch(console.error);
+			} else if(reaction.emoji.name==='2️⃣') {
+				mem.addRole(roles.find( x => (x.name === "L2 - MA2") )).catch(console.error);
+			}
+			break;
+			//pccp
+			case '714584534053814383':
+			mem.removeRole(roles.find( x => (x.name === "Inconnu L2") )).catch(console.error);
+			mem.addRole(roles.find( x => (x.name === "L2 - PCCP") )).catch(console.error);
+			if(reaction.emoji.name==='🇲') {
+				mem.addRole(roles.find( x => (x.name === "L2 - PCCP-maths") )).catch(console.error);
+			} else if(reaction.emoji.name==='🇨') {
+				mem.addRole(roles.find( x => (x.name === "L2 - PCCP-chimie") )).catch(console.error);
+			}
+			break;
+			//cmi
+			case '714584717302693908':
+			mem.removeRole(roles.find( x => (x.name === "Inconnu L2") )).catch(console.error);
+			mem.addRole(roles.find( x => (x.name === "L2 - CMI") )).catch(console.error);
+			if(reaction.emoji.name==='🇨') {
+				mem.addRole(roles.find( x => (x.name === "L2 - CMI-CE") )).catch(console.error);
+			} else if(reaction.emoji.name==='🇵') {
+				mem.addRole(roles.find( x => (x.name === "L2 - CMI-PSI") )).catch(console.error);
+			}
+			break;
+			//DL
+			case '714584863994544218':
+			mem.removeRole(roles.find( x => (x.name === "Inconnu L2") )).catch(console.error);
+			mem.addRole(roles.find( x => (x.name === "L2 - DL") )).catch(console.error);
+			mem.addRole(roles.find( x => (x.name === "L2 - Double Licence") )).catch(console.error);
+			break;
+		}		
+	}
+});
+//MESSAGE
+bot.on('message', message => {
+	if(message.author.bot) { return; }
+
+	let Contenu = message.content.toString().toLowerCase();
+	if(Contenu.startsWith(PREFIX)) {
+		if(Contenu.startsWith(PREFIX+"inv")) {
+			message.reply(MessageInvitation);
+		} else
+		if(Contenu.startsWith(PREFIX+"aide")) {
+			message.author.send(MessageAide);
+			message.reply(MessageAideReply);
+		} else
+		if(Contenu.startsWith(PREFIX+"où")) {
+			const COMMAND = Contenu.substr(4);
+			for(let who of COMMAND.split(" ")) {
+				if(who != "") {
+					if(who.startsWith("<@!") && who.endsWith(">")) { console.log("Mem");}
+					if(who.startsWith("<@&") && who.endsWith(">")) { console.log("Grp");}
+				}
+			}
+			message.reply("En développement, excusez-nous on fait au plus vites!");
+		} else
+		if(Contenu.startsWith(PREFIX+"dé")
+			|| Contenu.startsWith(PREFIX+"de")
+			|| Contenu.startsWith(PREFIX+"dice")) {
+			try {
+				message.reply(Dice.get(Contenu,PREFIX));
+			} catch (E) {
+				message.reply(MessageErreur);
+			}
+		}
+	}
+});
+
+//REACTION
+/*bot.on('messageReactionAdd', async (reaction, user) => {
+	const messageID = reaction.message.id;
+	console.log(reaction.emoji.name,'+');
+});*/

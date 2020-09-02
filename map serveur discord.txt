@@ -1,0 +1,173 @@
+CATÉGORIE & SALON :
+► #Bienvenue
+	╠ Salon d'arrivé du serveur
+	╠ Petit message de bienvenue
+	╚ Permision: @everyone[L;R]
+
+► #Inscription
+	╠ Messages pour les inscriptions aux rôles
+	╠ BOT écoute les réactions et mets les rôles en fonction
+	╚ Permision: @everyone[L;R]
+
+► #Information
+	╠ Salon de communication des informations d'ordre générales et importantes
+	╚ Permision: @everyone[L;E;R;F] (cooldown 1H sauf modo)
+
+► #Tutoriel
+	╠ Contenu déjà réalisé pour introduire les gens à Discord et à ses fonctionnalitées
+	╚ Permision: @everyone[L]
+
+► #Nouveaux arrivants
+	╠ Un salon juste pour voir les nouveaux arrivant
+	╠ Notifications du salon en OFF
+	╚ Permision: @everyone[], @modération[L;E;R;F], @bot[L;E;R;F]
+
+► #SOS | Besoin d'aide
+	╠ Salon d'aide
+	╚ Permision: @everyone[L;E;R;F] (cooldwon 15s sauf modo)
+
+■ Licence 1 informatique
+■ ► #Global
+■ ► 🔈 pour chaque groupe
+■ ► # pour chaque matière
+╚ Permision écrite: @everyone[], @L1Informatique[L;E;R;F], @enseignant[L;E;R;F], @bot[L;E;R;F]
+
+
+■ Licence 2 informatique
+■ ► #Global
+■ ► 🔈 pour chaque groupe
+■ ► # pour chaque matière
+╚ Permision écrite: @everyone[], @L2Informatique[L;E;R;F], @enseignant[L;E;R;F], @bot[L;E;R;F]
+
+
+■ Licence 3 informatique
+■ ► #Global
+■ ► 🔈 pour chaque groupe
+■ ► # pour chaque matière
+╚ Permision écrite: @everyone[], @L3Informatique[L;E;R;F], @L3InformatiquePro[L;E;R;F], @enseignant[L;E;R;F], @bot[L;E;R;F]
+
+■ Licence 3 informatique pro
+■ ► #Global
+■ ► 🔈 pour chaque groupe
+■ ► # pour chaque matière
+╚ Permision écrite: @everyone[], @L3Informatique[L;E;R;F], @L3InformatiquePro[L;E;R;F], @enseignant[L;E;R;F], @bot[L;E;R;F]
+
+■ Le coins des étudiants
+■ ► 🔈 La machine a café
+■ ► # Le forum
+■ ► # L'entraide
+	╚ Permision écrite: @everyone[], @L1Informatique[L;E;R;F], @L2Informatique[L;E;R;F], @L3Informatique[L;E;R;F], @L3InformatiquePro[L;E;R;F]
+╚ Permision écrite: @everyone[], @Étudiant[L;E;R;F]
+
+■ Licence 1
+■ ► #Global
+■ ► #+🔈 Mathématiques
+■ ► #+🔈 Physique
+■ ► #+🔈 Chimie
+■ ► #+🔈 Économie
+╚ Permision écrite: @everyone[], @L1[L;E;R;F], @enseignant[L;E;R;F], @bot[L;E;R;F]
+
+
+■ Licence 2
+■ ► #Global
+■ ► #+🔈 Mathématiques
+■ ► #+🔈 Physique
+■ ► #+🔈 Chimie
+■ ► #+🔈 Économie
+╚ Permision écrite: @everyone[], @L2[L;E;R;F], @enseignant[L;E;R;F], @bot[L;E;R;F]
+
+
+■ Licence 3
+■ ► #Global
+■ ► #+🔈 Mathématiques
+■ ► #+🔈 Physique
+■ ► #+🔈 Chimie
+■ ► #+🔈 Économie
+╚ Permision écrite: @everyone[], @L3[L;E;R;F], @enseignant[L;E;R;F], @bot[L;E;R;F]
+
+
+■ Spécial
+■ ► 🔈 Spécial 1
+■ ► 🔈 Spécial 2
+■ ► 🔈 Spécial 3
+	╠ Salon à utilisation ultra exceptionnel (tutorat/explication/...)
+	╚ Tous le monde peut y parler mais seul les modo on une vu sur le salon
+
+
+■ Modération
+■ ► #+🔈 Modération
+■ ► # Souvenir
+	╚ Permission écrite: @everyone[], @modération[L;E;R;F]
+
+
+_____________________________________________________________________________________________
+
+ROLES :
+
+@Modération
+@Enseignants
+@Étudiants
+@Service technique
+@MPCIE bot
+@L1
+@L1-Mathématiques
+@L1-Physique
+@L1-Chimie
+@L1-Informatique
+@L1-Économie
+@L1-Autre
+@L2
+@L2-Mathématiques
+@L2-Physique
+@L2-Chimie
+@L2-Informatique
+@L2-Économie
+@L2-Autre
+@L3
+@L3-Mathématiques
+@L3-Physique
+@L3-Chimie
+@L3-Informatique
+@L3-InformatiquePro
+@L3-Économie
+@L3-Autre
+
+_____________________________________________________________________________________________
+
+BOT :
+♦ Commande : 
+?aide
+Répond en message privée l'intégralité des commandes
+?dé <x>
+OU
+?dé <y>d<z>
+Lance un(ou 'y') dé à 'x' ou 'z' faces et retourne le résultats
+?stats
+Statitisques du serveur (a venirs)
+?inv
+répond avec le lien d'invitation permanent du serveur
+?git
+retourne le lien du repo du bot	
+
+
+♦ Event : 
+réaction ajouté message du salon inscription > affectation role correspondant
+
+
+
+_____________________________________________________________________________________________
+
+Annexe :
+	Permission salons écrits :
+		Partout : invitation autorisée, émojis externe interdit , mentionnez autorisée  pour tous les roles mais interdit pour ceux qui n'en ont pas , TTS INTERDIT PARTOUT
+		Permission spécifiqque ( indiqué entre crocher via les initiales des mots suivants ) :
+			Lecture
+			Écriture
+			Réaction
+			Fichier(& lien)
+			*administration : tous les drotis de modération
+	Permission salons vocaux :
+		De manière générale si au moin un droit écrit alors tous les droits vocaux de non modération donnée sinon rien
+
+
+
